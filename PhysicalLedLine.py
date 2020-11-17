@@ -28,7 +28,10 @@ class Ws2801LedLine(LedLine):
   def DisplayLine(self):
     for i in range(len(self._leds)):
       led = self._leds[i]
-      self._pixels.set_pixel_rgb(i, 255 * led.get_red(), 255 * led.get_green(), 255 * led.get_blue())
+      self._pixels.set_pixel_rgb(i, 
+        round(255 * led.get_red()), 
+        round(255 * led.get_green()), 
+        round(255 * led.get_blue()))
 
     self._pixels.show()
     if DEBUG:

@@ -4,7 +4,7 @@ from typing import List
 import colour
 import pygame
 
-from LedLine import VisualLedLine
+from VisualLedLine import VisualLedLine
 from PhysicalLedLine import Ws2801LedLine
 from LightsAlgo import *
 

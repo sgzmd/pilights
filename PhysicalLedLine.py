@@ -4,16 +4,18 @@ import sys
 if os.path.isfile("/sys/firmware/devicetree/base/model"):
   # Running on Raspberry Pi
   import RPi.GPIO as GPIO
+  RUNNING_ON_PI = True
 else:
   # Running on Mac maybe
-  import RPiSim.GPIO as GPIO
+  GPIO = None
+  RUNNING_ON_PI = False
 
 import Adafruit_WS2801
 import Adafruit_GPIO.SPI as SPI
 
 from LedLine import LedLine
 
-DEBUG = True
+DEBUG = True or not RUNNING_ON_PI
 if DEBUG:
   from colr import trans, controls
 
@@ -22,18 +24,21 @@ SPI_DEVICE = 0
 
 class Ws2801LedLine(LedLine):
   def __init__(self, size):
-    self._pixels = Adafruit_WS2801.WS2801Pixels(size, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO)
+    self._pixels = Adafruit_WS2801.WS2801Pixels(size, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO) if RUNNING_ON_PI else None
     super().__init__(size)
 
   def DisplayLine(self):
     for i in range(len(self._leds)):
       led = self._leds[i]
-      self._pixels.set_pixel_rgb(i, 
-        round(255 * led.get_red()), 
-        round(255 * led.get_green()), 
-        round(255 * led.get_blue()))
+      if RUNNING_ON_PI:
+        self._pixels.set_pixel_rgb(i,
+          round(255 * led.get_red()),
+          round(255 * led.get_green()),
+          round(255 * led.get_blue()))
 
-    self._pixels.show()
+    if RUNNING_ON_PI:
+      self._pixels.show()
+
     if DEBUG:
       controls.erase_display(2)
       for pixel in self._leds:

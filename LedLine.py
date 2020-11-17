@@ -22,6 +22,12 @@ class LedLine(metaclass=ABCMeta):
   def __len__(self):
     return len(self._leds)
 
+  def GetLeds(self):
+    return self._leds
+
+  def SetLeds(self, leds: LedList):
+    self._leds = leds
+
   @abstractmethod
   def DisplayLine(self):
     pass

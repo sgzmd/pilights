@@ -3,6 +3,8 @@ from abc import ABCMeta, abstractmethod
 from LedLine import LedLine as Line
 from colour import Color
 
+from collections import deque
+
 BLACK = Color(rgb=(0, 0, 0))
 
 
@@ -24,6 +26,7 @@ class RunningLight(metaclass=ABCMeta):
   """
   _currentStep = 0
   _currentLed = 0
+  _rotateStep = 0
 
   def __init__(self, leds: Line):
     self._leds = leds
@@ -35,18 +38,27 @@ class RunningLight(metaclass=ABCMeta):
     pass
 
   def update(self):
-    self._leds[self._currentLed] = self.nextLightColor()
-    if self._currentLed < self._len - 1:
-      self._leds[self._currentLed + 1] = BLACK
+    if self._rotateStep > 0:
+      deq = deque(self._leds.GetLeds())
+      deq.rotate(1)
+      self._leds.SetLeds(list(deq))
+    else:
+      self._leds[self._currentLed] = self.nextLightColor()
+      if self._currentLed < self._len - 1:
+        self._leds[self._currentLed + 1] = BLACK
 
-    self._currentLed = self._currentLed - 1
-    if self._currentLed < self._currentStep:
-      # Next step
-      self._currentLed = self._len - 1
-      self._currentStep = self._currentStep + 1
+      self._currentLed = self._currentLed - 1
+      if self._currentLed < self._currentStep:
+        # Next step
+        self._currentLed = self._len - 1
+        self._currentStep = self._currentStep + 1
 
     if self._currentStep == self._len:
-      self._currentStep = 0
+      if self._rotateStep == self._len * 3:
+        self._currentStep = 0
+        self._rotateStep = 0
+      else:
+        self._rotateStep = self._rotateStep + 1
 
 
 class WhiteRunningLight(RunningLight):

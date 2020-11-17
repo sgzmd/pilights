@@ -1,3 +1,5 @@
+from abc import ABCMeta, abstractmethod
+
 import logging
 import pygame
 
@@ -5,7 +7,10 @@ from typing import List
 from colour import Color
 from pygame import Surface, Rect
 
-class LedLine:
+class LedLine(metaclass=ABCMeta):
+  """
+  Abstract LedLine without any visualisation, relies on abstract DisplayLine being implemented.
+  """
   LedList = List[Color]
   _leds: LedList = []
 
@@ -21,15 +26,16 @@ class LedLine:
   def __len__(self):
     return len(self._leds)
 
-  def GetLeds(self):
-    return self._leds
-
+  @abstractmethod
   def DisplayLine(self):
-    logging.info("Display line: {}", self._leds)
+    pass
 
 BG_COLOR = (0, 0, 0)
 
 class VisualLedLine(LedLine):
+  """
+  LedLine which is visualised using PyGame window.
+  """
   _surface: Surface = None
   _rects: List[Rect] = []
   _bar_width = 0

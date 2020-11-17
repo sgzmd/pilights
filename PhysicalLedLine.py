@@ -1,4 +1,5 @@
 import os.path
+import sys
 
 if os.path.isfile("/sys/firmware/devicetree/base/model"):
   # Running on Raspberry Pi
@@ -11,6 +12,10 @@ import Adafruit_WS2801
 import Adafruit_GPIO.SPI as SPI
 
 from LedLine import LedLine
+
+DEBUG = True
+if DEBUG:
+  from colr import trans, controls
 
 SPI_PORT = 0
 SPI_DEVICE = 0
@@ -26,3 +31,10 @@ class Ws2801LedLine(LedLine):
       self._pixels.set_pixel_rgb(i, 255 * led.get_red(), 255 * led.get_green(), 255 * led.get_blue())
 
     self._pixels.show()
+    if DEBUG:
+      controls.erase_display(2)
+      for pixel in self._leds:
+        sys.stdout.write('\033[48;5;{code}m \033[0m'.format(code=trans.rgb2term(pixel.get_red() * 255,
+                                                                                pixel.get_green() * 255,
+                                                                                pixel.get_blue() * 255)))
+      sys.stdout.write("\n")

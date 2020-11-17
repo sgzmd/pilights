@@ -5,6 +5,7 @@ import colour
 import pygame
 
 from LedLine import VisualLedLine
+from PhysicalLedLine import Ws2801LedLine
 from LightsAlgo import *
 
 PixelList = List[Color]
@@ -23,7 +24,8 @@ def Rainbow():
       seed = seed + 1
 
 def MovingRainbow(surface: pygame.Surface):
-  line = VisualLedLine(50, surface)
+  # line = VisualLedLine(50, surface)
+  line = Ws2801LedLine(50)
   start_color = 0
   start_bright = len(line)
 
@@ -50,11 +52,11 @@ def MovingRainbow(surface: pygame.Surface):
       start_bright = start_bright - 1
 
 if __name__ == '__main__':
-  # Initializing Pygame
-  pygame.init()
+  # # Initializing Pygame
+  # pygame.init()
+  #
+  # # Initializing surface
+  # surface = pygame.display.set_mode((1000, 50))
+  # surface.fill((0,0,0))
 
-  # Initializing surface
-  surface = pygame.display.set_mode((1000, 50))
-  surface.fill((0,0,0))
-
-  MovingRainbow(surface)
+  MovingRainbow(None)

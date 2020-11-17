@@ -3,9 +3,9 @@ from typing import List
 
 import colour
 import pygame
-from pygame.locals import *
 
-from LedLine import VisualLedLine as Line
+from LedLine import VisualLedLine
+from LightsAlgo import *
 
 PixelList = List[Color]
 
@@ -22,35 +22,39 @@ def Rainbow():
     else:
       seed = seed + 1
 
+def MovingRainbow(surface: pygame.Surface):
+  line = VisualLedLine(50, surface)
+  start_color = 0
+  start_bright = len(line)
 
-if __name__ == '__main__':
-  # Initializing Pygame
-  pygame.init()
+  algo = RainbowRunningLight(line)
 
-  # Initializing surface
-  surface = pygame.display.set_mode((1024, 50))
-  line = Line(120, surface)
-
-  surface.fill((0,0,0))
-
-  seed = 0
   while True:
-    # getting the events
-
-    # if the event is quit means we clicked on the close window button
     for event in pygame.event.get():
       if event.type == pygame.QUIT:
         # quit the game
         pygame.quit()
         quit()
 
-    for i in range(len(line)):
-      line[i] = colour.Color(hsl=((i + 1 + seed) / len(line), 0.5, 0.5))
+    algo.update()
 
     line.DisplayLine()
-    if seed == len(line):
-      seed = 0
-    else:
-      seed = seed + 1
-
+    time.sleep(.005)
     pygame.display.update()
+
+    if start_color == len(line):
+      start_color = 0
+      start_bright = len(line)
+    else:
+      start_color = start_color + 1
+      start_bright = start_bright - 1
+
+if __name__ == '__main__':
+  # Initializing Pygame
+  pygame.init()
+
+  # Initializing surface
+  surface = pygame.display.set_mode((1000, 50))
+  surface.fill((0,0,0))
+
+  MovingRainbow(surface)

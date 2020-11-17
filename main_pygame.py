@@ -1,7 +1,7 @@
 import time
 import pygame
 
-from VisualLedLine import VisualLedLine
+from PyGameLedLine import PyGameLedLine
 from LightsAlgo import *
 
 
@@ -12,7 +12,7 @@ pygame.init()
 surface = pygame.display.set_mode((1500, 50))
 surface.fill((0, 0, 0))
 
-line = VisualLedLine(200, surface)
+line = PyGameLedLine(200, surface)
 algo = RainbowRunningLight(line)
 
 while True:

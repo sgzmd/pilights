@@ -7,7 +7,7 @@ from pygame.surface import Surface
 
 from LedLine import LedLine
 
-class VisualLedLine(LedLine):
+class PyGameLedLine(LedLine):
   """
   LedLine which is visualised using PyGame window.
   """

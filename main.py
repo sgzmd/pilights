@@ -52,11 +52,11 @@ def MovingRainbow(surface: pygame.Surface):
       start_bright = start_bright - 1
 
 if __name__ == '__main__':
-  # # Initializing Pygame
-  # pygame.init()
-  #
-  # # Initializing surface
-  # surface = pygame.display.set_mode((1000, 50))
-  # surface.fill((0,0,0))
+  # Initializing Pygame
+  pygame.init()
 
-  MovingRainbow(None)
+  # Initializing surface
+  surface = pygame.display.set_mode((1000, 50))
+  surface.fill((0,0,0))
+
+  MovingRainbow(surface)

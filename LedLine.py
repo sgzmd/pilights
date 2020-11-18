@@ -1,6 +1,6 @@
 from abc import ABCMeta, abstractmethod
 
-from typing import List
+from typing import List, Callable
 from colour import Color
 
 class LedLine(metaclass=ABCMeta):
@@ -31,6 +31,15 @@ class LedLine(metaclass=ABCMeta):
   @abstractmethod
   def DisplayLine(self):
     pass
+
+  @abstractmethod
+  def PreUpdate(self) -> Callable:
+    pass
+
+  @abstractmethod
+  def PostUpdate(self) -> Callable:
+    pass
+
 
 BG_COLOR = (0, 0, 0)
 

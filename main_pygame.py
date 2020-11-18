@@ -2,7 +2,7 @@ import time
 import pygame
 
 from PyGameLedLine import PyGameLedLine
-from LightsAlgo import *
+from algo.LightsAlgo import *
 
 
 # Initializing Pygame
@@ -12,19 +12,17 @@ pygame.init()
 surface = pygame.display.set_mode((1500, 50))
 surface.fill((0, 0, 0))
 
-line = PyGameLedLine(200, surface)
+line = PyGameLedLine(50, surface)
 algo = RainbowRunningLight(line)
 
-while True:
+from algo import Looper
+
+def processEvents():
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       # quit the game
       pygame.quit()
       quit()
 
-  algo.update()
-
-  line.DisplayLine()
-  time.sleep(.005)
-  pygame.display.update()
-
+looper = Looper.Looper(processEvents, lambda: pygame.display.update(), 0.01, algo, line)
+looper.loop()

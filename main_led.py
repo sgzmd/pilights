@@ -1,7 +1,7 @@
 import time
 
 from PhysicalLedLine import Ws2801LedLine
-from LightsAlgo import *
+from algo.LightsAlgo import *
 
 line = Ws2801LedLine(50)
 algo = RainbowRunningLight(line)

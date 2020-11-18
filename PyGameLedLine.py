@@ -16,6 +16,7 @@ class PyGameLedLine(LedLine):
   _bar_width = 0
   _bar_height = 30
 
+
   def __init__(self, size: int, surface: Surface):
     self._surface = surface
     self._bar_width = round(self._surface.get_width() / size)
@@ -34,7 +35,22 @@ class PyGameLedLine(LedLine):
 
   def DisplayLine(self):
     for i in range(len(self._leds)):
-      logging.info("Drawing rectangle {}", i)
       led = self._leds[i]
       bar_color = (255 * led.get_red(), 255 * led.get_green(), 255 * led.get_blue())
       pygame.draw.rect(self._surface, bar_color, self._rects[i])
+
+  def PreUpdate(self):
+    def pre_update():
+      for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+          # quit the game
+          pygame.quit()
+          quit()
+
+    return pre_update
+
+  def PostUpdate(self):
+    def post_update():
+      pygame.display.update()
+
+    return post_update

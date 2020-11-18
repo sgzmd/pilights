@@ -1,62 +1,51 @@
-import time
-from typing import List
+import logging
+import multiprocessing
+import platform
 
-import colour
+import prompt
 import pygame
 
+from ExecutionThread import ExecutionThread
+from LedLine import LedLine
 from PyGameLedLine import PyGameLedLine
-from PhysicalLedLine import Ws2801LedLine
-from LightsAlgo import *
+from algo.LightsAlgo import *
 
-PixelList = List[Color]
+DEFAULT_DELAY = 0.1
 
-def Rainbow():
-  line = Line(140)
-  seed = 0
-  while True:
-    for i in range(len(line)):
-      line[i] = colour.Color(hsl=((i + 1 + seed) / len(line), 0.5, 0.5))
-    line.DisplayLine()
-    time.sleep(1)
-    if seed == len(line):
-      seed = 0
-    else:
-      seed = seed + 1
+logging.basicConfig(level=logging.DEBUG,
+                    format='(%(threadName)-10s) %(message)s',
+                    )
 
-def MovingRainbow(surface: pygame.Surface):
-  # line = VisualLedLine(50, surface)
-  line = Ws2801LedLine(50)
-  start_color = 0
-  start_bright = len(line)
-
-  algo = RainbowRunningLight(line)
-
-  while True:
-    for event in pygame.event.get():
-      if event.type == pygame.QUIT:
-        # quit the game
-        pygame.quit()
-        quit()
-
-    algo.update()
-
-    line.DisplayLine()
-    time.sleep(.005)
-    pygame.display.update()
-
-    if start_color == len(line):
-      start_color = 0
-      start_bright = len(line)
-    else:
-      start_color = start_color + 1
-      start_bright = start_bright - 1
-
-if __name__ == '__main__':
+def pygame_init():
   # Initializing Pygame
   pygame.init()
 
   # Initializing surface
-  surface = pygame.display.set_mode((1000, 50))
-  surface.fill((0,0,0))
+  surface = pygame.display.set_mode((1500, 50))
+  surface.fill((0, 0, 0))
 
-  MovingRainbow(surface)
+  return surface
+
+def leds():
+  surface = pygame_init()
+  return PyGameLedLine(100, surface)
+
+def algo(line: LedLine):
+  return RainbowRunningLight(line)
+
+if __name__ == '__main__':
+  if platform.system() == "Darwin":
+    multiprocessing.set_start_method('spawn')
+
+  logging.info("Starting PiLights ...")
+
+  queue = multiprocessing.Queue()
+  thread = ExecutionThread(leds, algo, DEFAULT_DELAY, queue)
+  thread.start()
+
+  while True:
+    command = prompt.string()
+    if command == 'stop':
+      queue.put_nowait('stop')
+      thread.join()
+      break

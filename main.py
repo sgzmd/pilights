@@ -5,7 +5,7 @@ import platform
 import prompt
 import pygame
 
-from ExecutionThread import ExecutionThread
+from LedUpdateProcess import LedUpdateProcess
 from LedLine import LedLine
 from PyGameLedLine import PyGameLedLine
 from algo.LightsAlgo import *
@@ -40,12 +40,12 @@ if __name__ == '__main__':
   logging.info("Starting PiLights ...")
 
   queue = multiprocessing.Queue()
-  thread = ExecutionThread(leds, algo, DEFAULT_DELAY, queue)
-  thread.start()
+  process = LedUpdateProcess(leds, algo, DEFAULT_DELAY, queue)
+  process.start()
 
   while True:
     command = prompt.string()
     if command == 'stop':
       queue.put_nowait('stop')
-      thread.join()
+      process.join()
       break

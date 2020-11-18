@@ -5,7 +5,7 @@ import time
 from LedLine import LedLine
 from algo.LightsAlgo import LightAlgo
 
-class ExecutionThread(multiprocessing.Process):
+class LedUpdateProcess(multiprocessing.Process):
   _stop = False
   _line: LedLine = None
   _algo: LightAlgo = None

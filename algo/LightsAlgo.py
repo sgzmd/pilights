@@ -87,6 +87,12 @@ class RotateLights(LightAlgo, metaclass=ABCMeta):
 
   def __init__(self, leds: Line, times):
     self._rotateTimes = times
+
+    # Let's fill the line with rainbow colours
+    rainbow_algo = RainbowRunningLight(leds)
+    for led in leds:
+      led = rainbow_algo.nextLightColor()
+
     super().__init__(leds)
 
   def update(self) -> bool:

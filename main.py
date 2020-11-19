@@ -3,7 +3,6 @@ import logging
 import prompt
 
 from ConsoleLedLine import ConsoleLedLine
-from LedLine import LedLine
 from LedUpdateThread import LedUpdateThread
 from algo.LightsAlgo import *
 
@@ -39,3 +38,21 @@ if __name__ == '__main__':
     elif command == 'delay':
       delay = prompt.integer("Delay, ms") / 1000.0
       process.set_delay(delay)
+    elif command == 'algo':
+      algo_name = prompt.string("New algo name: white/rainbow/rotate")
+      if algo_name == 'white':
+        algo = WhiteRunningLight.Create
+      elif algo_name == 'rainbow':
+        algo = RainbowRunningLight.Create
+      elif algo_name == 'rotate':
+        algo = RotateLights.Create
+      else:
+        logging.error("Unrecognised algo %s", algo_name)
+        continue
+
+      process.stop()
+      process = start_led_thread(algo)
+      process.start()
+    else:
+      logging.error("Unrecognised command: %s", command)
+

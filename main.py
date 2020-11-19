@@ -1,7 +1,7 @@
 import logging
+
 import prompt
 
-from ConsoleLedLine import ConsoleLedLine
 from LedUpdateThread import LedUpdateThread
 from algo.LightsAlgo import *
 
@@ -42,7 +42,7 @@ if __name__ == '__main__':
       process = start_led_thread(algo)
       process.start()
     elif command == 'delay':
-      delay = prompt.integer("Delay, ms") / 1000.0
+      delay = prompt.integer("Delay, ms: ") / 1000.0
       if not USE_DUMMY_THREADING:
         process.set_delay(delay)
       else:
@@ -51,7 +51,7 @@ if __name__ == '__main__':
         process.set_delay(delay)
         process.start()
     elif command == 'algo':
-      algo_name = prompt.string("New algo name: white/rainbow/rotate")
+      algo_name = prompt.string("New algo name: white/rainbow/rotate/lum: ")
       if algo_name == 'white':
         algo = WhiteRunningLight.Create
       elif algo_name == 'rainbow':

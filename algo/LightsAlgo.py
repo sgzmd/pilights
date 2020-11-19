@@ -1,9 +1,12 @@
+import math
+import random
 from abc import ABCMeta, abstractmethod
+from collections import deque
+from enum import Enum
 
-from LedLine import LedLine as Line
 from colour import Color
 
-from collections import deque
+from LedLine import LedLine as Line
 
 BLACK = Color(rgb=(0, 0, 0))
 
@@ -78,6 +81,7 @@ class RunningLight(LightAlgo, metaclass=ABCMeta):
     # algorithm can continue
     return True
 
+
 class RotateLights(LightAlgo, metaclass=ABCMeta):
   _currentStep = 0
 
@@ -85,11 +89,10 @@ class RotateLights(LightAlgo, metaclass=ABCMeta):
   def Create(leds: Line):
     return RotateLights(leds)
 
-  def __init__(self, leds: Line, times = None):
+  def __init__(self, leds: Line, times=None):
     self._rotateTimes = times
 
     # Let's fill the line with rainbow colours
-    rainbow_algo = RainbowRunningLight(leds)
     leds.SetLeds([Color(hsl=(i / len(leds), 1.0, 0.5)) for i in range(len(leds))])
 
     super().__init__(leds)
@@ -114,8 +117,10 @@ class WhiteRunningLight(RunningLight):
   """
   Implementation of RunningLight where color(i) is always white
   """
+
   def nextLightColor(self) -> Color:
-    return Color(rgb=(1,1,1))
+    return Color(rgb=(1, 1, 1))
+
 
 class RainbowRunningLight(RunningLight):
   @staticmethod
@@ -125,9 +130,64 @@ class RainbowRunningLight(RunningLight):
   """
   Implementation of RunningLight where color(i) = next colour in HSL spectrum with H ~ i.
   """
+
   def __init__(self, leds: Line):
     super().__init__(leds)
 
   def nextLightColor(self) -> Color:
     hue = (self._currentLed + 1) / self._len
     return Color(hsl=(hue, 1.0, 0.5))
+
+
+class RotateAndLuminance(LightAlgo):
+  class Type(Enum):
+    SIN = 0
+    RANDOM = 1
+
+  @staticmethod
+  def Create(leds: Line):
+    return RotateAndLuminance(leds, type = RotateAndLuminance.Type.SIN)
+
+  @staticmethod
+  def CreateRandom(leds: Line):
+    return RotateAndLuminance(leds, type = RotateAndLuminance.Type.RANDOM)
+
+  _step = 0
+  _MAX_STEP = 1000
+
+  def __init__(self, leds: Line, rotate_every=100, type: Type = Type.RANDOM):
+    self._rotate_every = rotate_every
+    self._type = type
+    # Let's fill the line with rainbow colours
+    leds.SetLeds([Color(hsl=(i / len(leds), 1.0, 0.5)) for i in range(len(leds))])
+
+    super().__init__(leds)
+
+  def update(self) -> bool:
+    # Rotate every 3 steps
+    if self._step % self._rotate_every == 0:
+      deq = deque(self._leds.GetLeds())
+      deq.rotate(1)
+      self._leds.SetLeds(list(deq))
+
+    leds = self._leds.GetLeds()
+    for i in range(len(leds)):
+      luminance = max(
+        min(
+          abs(self.nextValue(i)),
+          0.9),
+        0.1)
+      color = leds[i]
+      color.set_luminance(luminance)
+      leds[i] = color
+    self._leds.SetLeds(leds)
+
+    self._step += 1
+    if self._step > self._MAX_STEP:
+      self._step = 0
+
+  def nextValue(self, i):
+    if self._type == RotateAndLuminance.Type.SIN:
+      return math.sin(math.radians(self._step + i))
+    elif self._type == RotateAndLuminance.Type.RANDOM:
+      return random.random()

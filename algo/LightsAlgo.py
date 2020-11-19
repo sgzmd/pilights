@@ -85,18 +85,17 @@ class RotateLights(LightAlgo, metaclass=ABCMeta):
   def Create(leds: Line):
     return RotateLights(leds)
 
-  def __init__(self, leds: Line, times):
+  def __init__(self, leds: Line, times = None):
     self._rotateTimes = times
 
     # Let's fill the line with rainbow colours
     rainbow_algo = RainbowRunningLight(leds)
-    for led in leds:
-      led = rainbow_algo.nextLightColor()
+    leds.SetLeds([Color(hsl=(i / len(leds), 1.0, 0.5)) for i in range(len(leds))])
 
     super().__init__(leds)
 
   def update(self) -> bool:
-    if self._currentStep < self._rotateTimes:
+    if not self._rotateTimes or self._currentStep < self._rotateTimes:
       deq = deque(self._leds.GetLeds())
       deq.rotate(1)
       self._leds.SetLeds(list(deq))

@@ -17,15 +17,18 @@ class ConsoleLedLine(LedLine):
     super().__init__(size)
 
   def DisplayLine(self):
+    controls.pos_save()
+    controls.move_pos(0, 0)
     for pixel in self._leds:
       sys.stdout.write('\033[48;5;{code}m \033[0m'.format(code=trans.rgb2term(pixel.get_red() * 255,
                                                                               pixel.get_green() * 255,
                                                                               pixel.get_blue() * 255)))
-    sys.stdout.write("\n")
+    controls.pos_restore()
 
   def PreUpdate(self):
     def pre_update():
-      controls.erase_display(2)
+       # controls.erase_display(2)
+      pass
 
     return pre_update
 

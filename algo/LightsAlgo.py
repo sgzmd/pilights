@@ -191,3 +191,21 @@ class RotateAndLuminance(LightAlgo):
       return math.sin(math.radians(self._step + i))
     elif self._type == RotateAndLuminance.Type.RANDOM:
       return random.random()
+
+class StarryNight(LightAlgo):
+  @staticmethod
+  def Create(leds: Line):
+    return StarryNight(leds)
+
+  def __init__(self, leds):
+    super().__init__(leds)
+
+  def update(self):
+    led_index = random.randint(0, len(self._leds) - 1)
+    hue = random.randint(0, 360) / 360.0
+    luminance = random.randint(0, 90) / 100.0
+
+    self._leds.SetOneLed(
+      led_index,
+      Color(hsl=(hue, 1.0, luminance)),
+      True)

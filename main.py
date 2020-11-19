@@ -28,7 +28,7 @@ def start_led_thread(algo, delay = DEFAULT_DELAY) -> LedUpdateThread:
 if __name__ == '__main__':
   logging.info("Starting PiLights ...")
 
-  algo = RotateAndLuminance.Create
+  algo = StarryNight.Create
   process = start_led_thread(algo)
   process.start()
 
@@ -60,6 +60,8 @@ if __name__ == '__main__':
         algo = RotateLights.Create
       elif algo_name == 'lum':
         algo = RotateAndLuminance.Create
+      elif algo_name == 'night':
+        algo = StarryNight.Create
       else:
         logging.error("Unrecognised algo %s", algo_name)
         continue

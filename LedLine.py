@@ -28,6 +28,9 @@ class LedLine(metaclass=ABCMeta):
   def SetLeds(self, leds: LedList):
     self._leds = leds
 
+  def SetOneLed(self, idx: int, color: Color, smooth = False):
+    self._leds[idx] = color
+
   @abstractmethod
   def DisplayLine(self):
     pass

@@ -1,13 +1,10 @@
 import logging
-import multiprocessing
-import platform
 
 import prompt
-import pygame
 
-from LedUpdateProcess import LedUpdateProcess
+from ConsoleLedLine import ConsoleLedLine
 from LedLine import LedLine
-from PyGameLedLine import PyGameLedLine
+from LedUpdateThread import LedUpdateThread
 from algo.LightsAlgo import *
 
 DEFAULT_DELAY = 0.1
@@ -16,36 +13,29 @@ logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-10s) %(message)s',
                     )
 
-def pygame_init():
-  # Initializing Pygame
-  pygame.init()
-
-  # Initializing surface
-  surface = pygame.display.set_mode((1500, 50))
-  surface.fill((0, 0, 0))
-
-  return surface
-
 def leds():
-  surface = pygame_init()
-  return PyGameLedLine(100, surface)
+  return ConsoleLedLine(100)
 
-def algo(line: LedLine):
-  return RainbowRunningLight(line)
+def start_led_thread(algo, delay = DEFAULT_DELAY) -> LedUpdateThread:
+  process = LedUpdateThread(leds, algo, delay)
+  return process
 
 if __name__ == '__main__':
-  if platform.system() == "Darwin":
-    multiprocessing.set_start_method('spawn')
-
   logging.info("Starting PiLights ...")
 
-  queue = multiprocessing.Queue()
-  process = LedUpdateProcess(leds, algo, DEFAULT_DELAY, queue)
+  algo = RainbowRunningLight.Create
+  process = start_led_thread(algo)
   process.start()
 
   while True:
     command = prompt.string()
     if command == 'stop':
-      queue.put_nowait('stop')
-      process.join()
-      break
+      process.stop()
+      logging.info("Stopped LED thread, Ctrl-C for exit.")
+    elif command == 'start':
+      process.stop()
+      process = start_led_thread(algo)
+      process.start()
+    elif command == 'delay':
+      delay = prompt.integer("Delay, ms") / 1000.0
+      process.set_delay(delay)

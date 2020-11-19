@@ -81,6 +81,10 @@ class RunningLight(LightAlgo, metaclass=ABCMeta):
 class RotateLights(LightAlgo, metaclass=ABCMeta):
   _currentStep = 0
 
+  @staticmethod
+  def Create(leds: Line):
+    return RotateLights(leds)
+
   def __init__(self, leds: Line, times):
     self._rotateTimes = times
     super().__init__(leds)
@@ -98,6 +102,10 @@ class RotateLights(LightAlgo, metaclass=ABCMeta):
 
 
 class WhiteRunningLight(RunningLight):
+  @staticmethod
+  def Create(leds: Line):
+    return WhiteRunningLight(leds)
+
   """
   Implementation of RunningLight where color(i) is always white
   """
@@ -105,6 +113,10 @@ class WhiteRunningLight(RunningLight):
     return Color(rgb=(1,1,1))
 
 class RainbowRunningLight(RunningLight):
+  @staticmethod
+  def Create(leds: Line):
+    return RainbowRunningLight(leds)
+
   """
   Implementation of RunningLight where color(i) = next colour in HSL spectrum with H ~ i.
   """

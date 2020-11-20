@@ -23,7 +23,7 @@ class PyGameLedLine(LedLine):
 
   def __init__(self, size: int, surface: Surface):
     self._surface = surface
-    self._bar_width = round(self._surface.get_width() / size)
+    self._bar_width = round(self._surface.get_width() / size+1)
     self._bar_height = self._surface.get_height()
 
     for i in range(size):
@@ -32,7 +32,7 @@ class PyGameLedLine(LedLine):
 
       self._rects.append(Rect(rect_x,
                               rect_y,
-                              self._bar_width,
+                              self._bar_width - 5,
                               self._bar_height))
 
     super().__init__(size)
@@ -49,7 +49,7 @@ class PyGameLedLine(LedLine):
           lum -= self._SMOOTH_STEP
           self._leds[idx].set_luminance(lum)
           self.redrawLed(idx)
-          self.PreUpdate()()
+          self.PreUpdate()
           pygame.display.update()
           time.sleep(0.1)
 
@@ -61,7 +61,7 @@ class PyGameLedLine(LedLine):
         color.set_luminance(new_lum)
         self._leds[idx] = color
         self.redrawLed(idx)
-        self.PreUpdate()()
+        self.PreUpdate()
         pygame.display.update()
         time.sleep(0.1)
 

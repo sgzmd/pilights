@@ -1,8 +1,8 @@
 import logging
 
 # Note the use of dummy_threading - without it pygame doesn't work
-import dummy_threading as threading
-# import threading
+# import dummy_threading as threading
+import threading
 import time
 
 from LedLine import LedLine

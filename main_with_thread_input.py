@@ -7,7 +7,7 @@ import click
 
 from LedLine import LedLine
 from algo import LightsAlgo
-from control import ControlMessage, ControlThread
+from control import *
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-10s) %(message)s')
@@ -28,7 +28,8 @@ def sleep(mode: str, delay: int):
 @click.option("--num", default=50, help="Number of leds")
 @click.option("--algo", default="StarryNight", help="Name of the initial algorithm")
 @click.option("--delay", default=100, help="Delay, ms")
-def run(mode: str, num: int, algo: str, delay: int):
+@click.option("--apikey", default="", help="Telegram API key")
+def run(mode: str, num: int, algo: str, delay: int, apikey: str):
   logging.info("Starting main thread with mode %s", mode)
 
   line: LedLine = None
@@ -52,7 +53,7 @@ def run(mode: str, num: int, algo: str, delay: int):
   algo = LightsAlgo.CreateAlgo(algo, line)
 
   q = queue.Queue(1)
-  control_thread = ControlThread(q)
+  control_thread = TelegramControlThread(q, apikey)
   control_thread.start()
   while True:
     if not q.empty():

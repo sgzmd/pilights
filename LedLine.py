@@ -45,6 +45,11 @@ class LedLine(metaclass=ABCMeta):
   def PostUpdate(self) -> Callable:
     pass
 
+  def ClearLine(self):
+    num_leds = len(self._leds)
+    self._leds = [Color(rgb=(0,0,0)) for _ in range(num_leds)]
+    self.DisplayLine()
+
 
 BG_COLOR = (0, 0, 0)
 

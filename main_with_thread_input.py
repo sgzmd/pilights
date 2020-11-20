@@ -1,17 +1,62 @@
+import enum
 import logging
+import queue
+import sys
+import threading
 import time
 
 import click
-import threading
-
 import prompt
 
-from algo import LightsAlgo
-
 from LedLine import LedLine
+from algo import LightsAlgo
 
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-10s) %(message)s')
+
+class ControlMessage:
+  class MessageType(enum.Enum):
+    STOP = 1
+    CHANGE_DELAY = 2
+    CHANGE_ALGO = 3
+
+  _data = None
+  _messageType: MessageType = None
+
+  def __init__(self, type: MessageType, data = None):
+    self._messageType = type
+    self._data = data
+
+  def type(self):
+    return self._messageType
+
+  def set_data(self, data):
+    self._data = data
+
+  def data(self):
+    return self._data
+
+class ControlThread(threading.Thread):
+  def __init__(self, q: queue.Queue):
+    self._q = q
+    super().__init__()
+
+  def run(self) -> None:
+    while True:
+      command = prompt.string("Enter command (stop/delay/algo): ")
+      if command == 'stop':
+        logging.info("Stopping the program")
+        self._q.put_nowait(ControlMessage(ControlMessage.MessageType.STOP))
+        return
+      elif command == 'algo':
+        algo_names = ", ".join(LightsAlgo.algo_by_name.keys())
+        new_algo_name = prompt.string(f"Select new algorithm, one of {algo_names}: ")
+        logging.info("Requesting algorithm change to %s", new_algo_name)
+
+        self._q.put_nowait(ControlMessage(
+          ControlMessage.MessageType.CHANGE_ALGO,
+          new_algo_name))
+
 # def UpdateThreadFunction(algo: LightsAlgo.LightAlgo):
 #   while True:
 #     command = prompt.string()
@@ -78,7 +123,20 @@ def run(mode: str, num: int, algo: str, delay: int):
 
   algo = LightsAlgo.CreateAlgo(algo, line)
 
+  q = queue.Queue(1)
+  control_thread = ControlThread(q)
+  control_thread.start()
   while True:
+    if not q.empty():
+      event : ControlMessage = q.get_nowait()
+      if event.type() == ControlMessage.MessageType.STOP:
+        logging.info("Received STOP message, exiting ... ")
+        sys.exit(0)
+      elif event.type() == ControlMessage.MessageType.CHANGE_ALGO:
+        logging.info("Changing algo to %s", event.data())
+        line.ClearLine()
+        algo = LightsAlgo.CreateAlgo(event.data(), line)
+
     line.PreUpdate()
     algo.update()
     line.DisplayLine()

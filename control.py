@@ -78,21 +78,21 @@ class TelegramControlThread(threading.Thread):
 
   def algo_menu_handler(self, update: Update, context: CallbackContext):
     update.callback_query.message.reply_text("Выберите новый алгоритм", reply_markup=InlineKeyboardMarkup([
-      [InlineKeyboardButton('Звездная ночь', callback_data='new_algo_starrynight')],
-      [InlineKeyboardButton('Радуга', callback_data='newalgo_rainbow')],
+      [InlineKeyboardButton('Звездная ночь', callback_data='starrynight')],
+      [InlineKeyboardButton('Радуга', callback_data='rainbow')],
     ]))
 
   def starry_night(self, update: Update, context: CallbackContext):
     self._q.put_nowait(ControlMessage(
           ControlMessage.MessageType.CHANGE_ALGO,
           "StarryNight"))
-    update.callback_query.message.reply_text("А пожалуйста!")
+    update.callback_query.message.reply_text("А пожалуйста!", reply_markup=self.main_menu_keyboard())
 
   def rainbow(self, update: Update, context: CallbackContext):
     self._q.put_nowait(ControlMessage(
           ControlMessage.MessageType.CHANGE_ALGO,
           "RotateAndLuminance"))
-    update.callback_query.message.reply_text("Легко!")
+    update.callback_query.message.reply_text("Легко!", reply_markup=self.main_menu_keyboard())
 
 
   def hello(self, update: Update, context: CallbackContext):
@@ -104,7 +104,7 @@ class TelegramControlThread(threading.Thread):
 
   def run(self):
     self._dispatcher.add_handler(CommandHandler("start", self.hello))
-    self._dispatcher.add_handler(CallbackQueryHandler(self.starry_night, "^newalgo_starrynight"))
-    self._dispatcher.add_handler(CallbackQueryHandler(self.rainbow, "^newalgo_rainbow"))
-    self._dispatcher.add_handler(CallbackQueryHandler(self.algo_menu_handler, "^algo"))
+    self._dispatcher.add_handler(CallbackQueryHandler(self.starry_night, pattern="starrynight"))
+    self._dispatcher.add_handler(CallbackQueryHandler(self.rainbow, pattern="rainbow"))
+    self._dispatcher.add_handler(CallbackQueryHandler(self.algo_menu_handler, pattern="algo"))
     self._updater.start_polling()

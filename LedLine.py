@@ -26,7 +26,9 @@ class LedLine(metaclass=ABCMeta):
     return self._leds
 
   def SetLeds(self, leds: LedList):
+    self.PreUpdate()()
     self._leds = leds
+    self.PostUpdate()()
 
   def SetOneLed(self, idx: int, color: Color, smooth = False):
     self._leds[idx] = color

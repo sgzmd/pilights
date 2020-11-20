@@ -13,7 +13,7 @@ BLACK = Color(rgb=(0, 0, 0))
 
 class LightAlgo:
   def __init__(self, leds: Line):
-    self._leds = leds
+    self._line = leds
     self._len = len(leds)
     self._currentLed = self._len - 1
 
@@ -54,13 +54,13 @@ class RunningLight(LightAlgo, metaclass=ABCMeta):
 
   def update(self) -> bool:
     if self._rotateStep > 0:
-      deq = deque(self._leds.GetLeds())
+      deq = deque(self._line.GetLeds())
       deq.rotate(1)
-      self._leds.SetLeds(list(deq))
+      self._line.SetLeds(list(deq))
     else:
-      self._leds[self._currentLed] = self.nextLightColor()
+      self._line[self._currentLed] = self.nextLightColor()
       if self._currentLed < self._len - 1:
-        self._leds[self._currentLed + 1] = BLACK
+        self._line[self._currentLed + 1] = BLACK
 
       self._currentLed = self._currentLed - 1
       if self._currentLed < self._currentStep:
@@ -99,9 +99,9 @@ class RotateLights(LightAlgo, metaclass=ABCMeta):
 
   def update(self) -> bool:
     if not self._rotateTimes or self._currentStep < self._rotateTimes:
-      deq = deque(self._leds.GetLeds())
+      deq = deque(self._line.GetLeds())
       deq.rotate(1)
-      self._leds.SetLeds(list(deq))
+      self._line.SetLeds(list(deq))
       self._currentStep += 1
       return True
     else:
@@ -166,11 +166,11 @@ class RotateAndLuminance(LightAlgo):
   def update(self) -> bool:
     # Rotate every 3 steps
     if self._step % self._rotate_every == 0:
-      deq = deque(self._leds.GetLeds())
+      deq = deque(self._line.GetLeds())
       deq.rotate(1)
-      self._leds.SetLeds(list(deq))
+      self._line.SetLeds(list(deq))
 
-    leds = self._leds.GetLeds()
+    leds = self._line.GetLeds()
     for i in range(len(leds)):
       luminance = max(
         min(
@@ -180,7 +180,7 @@ class RotateAndLuminance(LightAlgo):
       color = leds[i]
       color.set_luminance(luminance)
       leds[i] = color
-    self._leds.SetLeds(leds)
+      self._line.SetOneLed(i, color)
 
     self._step += 1
     if self._step > self._MAX_STEP:
@@ -201,11 +201,19 @@ class StarryNight(LightAlgo):
     super().__init__(leds)
 
   def update(self):
-    led_index = random.randint(0, len(self._leds) - 1)
+    led_index = random.randint(0, len(self._line) - 1)
     hue = random.randint(0, 360) / 360.0
     luminance = random.randint(0, 90) / 100.0
 
-    self._leds.SetOneLed(
+    self._line.SetOneLed(
       led_index,
       Color(hsl=(hue, 1.0, luminance)),
       True)
+
+_algos = [RotateLights, RotateAndLuminance, StarryNight, WhiteRunningLight]
+algo_by_name = {}
+for algo in _algos:
+  algo_by_name[algo.__name__] = algo
+
+def CreateAlgo(name: str, leds: Line):
+  return algo_by_name[name].Create(leds)

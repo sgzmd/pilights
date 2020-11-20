@@ -44,13 +44,14 @@ class PyGameLedLine(LedLine):
       lum = self._leds[idx].get_luminance()
       num_steps = round(lum / self._SMOOTH_STEP)
 
-
-      for i in range(num_steps):
-        lum -= self._SMOOTH_STEP
-        self._leds[idx].set_luminance(lum)
-        self.redrawLed(idx)
-        pygame.display.update()
-        time.sleep(0.1)
+      if lum > 0.1:
+        for i in range(num_steps):
+          lum -= self._SMOOTH_STEP
+          self._leds[idx].set_luminance(lum)
+          self.redrawLed(idx)
+          self.PreUpdate()()
+          pygame.display.update()
+          time.sleep(0.1)
 
       new_lum = 0
       num_steps = round(color.get_luminance() / self._SMOOTH_STEP)
@@ -60,8 +61,11 @@ class PyGameLedLine(LedLine):
         color.set_luminance(new_lum)
         self._leds[idx] = color
         self.redrawLed(idx)
+        self.PreUpdate()()
         pygame.display.update()
         time.sleep(0.1)
+
+    super().SetOneLed(idx, color)
 
   def DisplayLine(self):
     for i in range(len(self._leds)):
@@ -79,17 +83,11 @@ class PyGameLedLine(LedLine):
                      self._rects[idx])
 
   def PreUpdate(self):
-    def pre_update():
-      for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-          # quit the game
-          pygame.quit()
-          quit()
-
-    return pre_update
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        # quit the game
+        pygame.quit()
+        quit()
 
   def PostUpdate(self):
-    def post_update():
-      pygame.display.update()
-
-    return post_update
+    pygame.display.update()

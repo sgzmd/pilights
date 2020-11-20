@@ -51,7 +51,7 @@ class PyGameLedLine(LedLine):
           self.redrawLed(idx)
           self.PreUpdate()
           pygame.display.update()
-          time.sleep(0.1)
+          time.sleep(0.01)
 
       new_lum = 0
       num_steps = round(color.get_luminance() / self._SMOOTH_STEP)
@@ -63,7 +63,7 @@ class PyGameLedLine(LedLine):
         self.redrawLed(idx)
         self.PreUpdate()
         pygame.display.update()
-        time.sleep(0.1)
+        time.sleep(0.01)
 
     super().SetOneLed(idx, color)
 

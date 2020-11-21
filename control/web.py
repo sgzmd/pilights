@@ -15,7 +15,6 @@ logging.info("Flask will be looking for templates in %s", templates)
 app = Flask(__name__, template_folder=templates)
 
 control_queue: queue.Queue = None
-delay: int = None
 
 MAX_DELAY = 1000
 MIN_DELAY = 1
@@ -32,6 +31,20 @@ class SpeedControl():
       return False
     else:
       self._delay -= DELAY_STEP
+      return True
+
+  def slower(self):
+    if self._delay > MAX_DELAY:
+      return False
+    else:
+      self._delay += DELAY_STEP
+      return True
+
+  def delay(self):
+    return self._delay
+
+delay: SpeedControl = None
+
 
 algos = {
   "starry_night": "StarryNight",
@@ -43,7 +56,10 @@ algos = {
 @app.route("/result/<result_name>")
 def main(result_name = None):
   logging.info("Result name: %s", result_name)
-  return render_template("main.html")
+  if result_name == None:
+    return render_template("main.html")
+  else:
+    return render_template("main.html", last_command=result_name)
 
 @app.route("/algo/<algo_name>")
 def algo(algo_name):
@@ -52,7 +68,7 @@ def algo(algo_name):
     return redirect("/result/no_such_algo")
   else:
     logging.info("Requesting algo %s", algo_name)
-    control_queue.put_nowait(ControlMessage(
+    control_queue.put(ControlMessage(
       ControlMessage.MessageType.CHANGE_ALGO,
       algos[algo_name]))
   return redirect("/result/changed_algo")
@@ -60,9 +76,23 @@ def algo(algo_name):
 @app.route("/speed/<direction>")
 def speed(direction):
   if direction == "faster":
-    pass
+    if delay.faster():
+      control_queue.put(ControlMessage(
+        ControlMessage.MessageType.CHANGE_DELAY,
+        delay.delay()))
+
+      return redirect("/result/faster")
+    else:
+      return redirect("/result/too_faster")
   elif direction == "slower":
-    pass
+    if delay.slower():
+      control_queue.put(ControlMessage(
+        ControlMessage.MessageType.CHANGE_DELAY,
+        delay.delay()))
+
+      return redirect("/result/slower")
+    else:
+      return redirect("/result/too_slow")
   else:
     logging.info("Wrong direction: %s", direction)
     return redirect("/result/bad_speed")
@@ -71,7 +101,7 @@ class WebControlThread(threading.Thread):
   def __init__(self, q: queue.Queue, initial_delay: int):
     global control_queue, delay
     control_queue = q
-    delay = initial_delay
+    delay = SpeedControl(initial_delay)
     super().__init__()
 
   def run(self):

@@ -9,6 +9,9 @@ from LedLine import LedLine
 from algo import LightsAlgo
 from control import *
 
+from control.web import WebControlThread
+from control.message import ControlMessage
+
 logging.basicConfig(level=logging.DEBUG,
                     format='(%(threadName)-10s) %(message)s')
 
@@ -53,7 +56,8 @@ def run(mode: str, num: int, algo: str, delay: int, apikey: str):
   algo = LightsAlgo.CreateAlgo(algo, line)
 
   q = queue.Queue(1)
-  control_thread = TelegramControlThread(q, apikey, delay)
+  # control_thread = TelegramControlThread(q, apikey, delay)
+  control_thread = WebControlThread(q)
   control_thread.start()
   while True:
     if not q.empty():

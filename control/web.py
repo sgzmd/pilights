@@ -23,7 +23,9 @@ algos = {
 }
 
 @app.route("/")
-def main():
+@app.route("/result/<result_name>")
+def main(result_name = None):
+  logging.info("Result name: %s", result_name)
   return render_template("main.html")
 
 @app.route("/algo/<algo_name>")
@@ -31,7 +33,7 @@ def algo(algo_name):
   logging.info("Requesting algo %s", algo_name)
   if algo_name not in algos:
     logging.error("No such algorithm %s", algo_name)
-    return redirect("/?no_such_algo")
+    return redirect("/result/no_such_algo")
   else:
     logging.info("Requesting algo %s", algo_name)
     control_queue.put_nowait(ControlMessage(

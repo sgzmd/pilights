@@ -24,7 +24,10 @@ SPI_DEVICE = 0
 
 class Ws2801LedLine(LedLine):
   def __init__(self, size):
-    self._pixels = Adafruit_WS2801.WS2801Pixels(size, spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO) if RUNNING_ON_PI else None
+    if RUNNING_ON_PI:
+      self._pixels = Adafruit_WS2801.WS2801Pixels(
+          size, 
+          spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO) 
     super().__init__(size)
 
   def DisplayLine(self):

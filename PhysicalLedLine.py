@@ -1,6 +1,8 @@
 import os.path
 import sys
 from colour import Color
+import logging
+from ConsoleLedLine import ConsoleLedLine
 
 if os.path.isfile("/sys/firmware/devicetree/base/model"):
   # Running on Raspberry Pi
@@ -28,9 +30,9 @@ class Ws2801LedLine(LedLine):
     if RUNNING_ON_PI:
       self._pixels = Adafruit_WS2801.WS2801Pixels(
           size, 
-          spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO)
-    self._leds = [Color(rgb=(0,0,0) for _ in range(len(self._leds)))]
+          spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO)    
     super().__init__(size)
+    self._leds = [Color(rgb=(0,0,0)) for _ in range(len(self._leds))]
     self.DisplayLine()
 
   def DisplayLine(self):
@@ -44,11 +46,15 @@ class Ws2801LedLine(LedLine):
 
     if RUNNING_ON_PI:
       self._pixels.show()
+  
+  def SetOneLed(self, idx: int, color: Color, smooth=False):
+    logging.info("SetOneLed(%d to %s)", idx, color)
 
-    if DEBUG:
-      controls.erase_display(2)
-      for pixel in self._leds:
-        sys.stdout.write('\033[48;5;{code}m \033[0m'.format(code=trans.rgb2term(pixel.get_red() * 255,
-                                                                                pixel.get_green() * 255,
-                                                                                pixel.get_blue() * 255)))
-      sys.stdout.write("\n")
+    self._leds[idx] = color
+    self._pixels.set_pixel_rgb(idx,  round(255 * color.get_red()),
+          round(255 * color.get_green()),
+          round(255 * color.get_blue()))
+  
+
+  def PostUpdate(self):
+    self._pixels.show()

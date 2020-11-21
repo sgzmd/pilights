@@ -21,14 +21,14 @@ def sleep(mode: str, delay: int):
     import pygame
     pygame.time.delay(delay)
   elif mode in ("console", "led"):
-    time.sleep(delay)
+    time.sleep(delay / 100.0)
   else:
     raise ValueError(f"Mode {mode} is not supported")
 
 
 @click.command()
-@click.option("--mode", default="pygame", help="Mode to launch in (console/pygame/led)")
-@click.option("--num", default=50, help="Number of leds")
+@click.option("--mode", default="led", help="Mode to launch in (console/pygame/led)")
+@click.option("--num", default=56, help="Number of leds")
 @click.option("--algo", default="StarryNight", help="Name of the initial algorithm")
 @click.option("--delay", default=100, help="Delay, ms")
 @click.option("--apikey", default="", help="Telegram API key")

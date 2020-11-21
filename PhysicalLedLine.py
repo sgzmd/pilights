@@ -1,5 +1,6 @@
 import os.path
 import sys
+from colour import Color
 
 if os.path.isfile("/sys/firmware/devicetree/base/model"):
   # Running on Raspberry Pi
@@ -27,8 +28,10 @@ class Ws2801LedLine(LedLine):
     if RUNNING_ON_PI:
       self._pixels = Adafruit_WS2801.WS2801Pixels(
           size, 
-          spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO) 
+          spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO)
+    self._leds = [Color(rgb=(0,0,0) for _ in range(len(self._leds)))]
     super().__init__(size)
+    self.DisplayLine()
 
   def DisplayLine(self):
     for i in range(len(self._leds)):

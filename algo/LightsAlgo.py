@@ -225,7 +225,7 @@ class StarryNight(LightAlgo):
       True)
 
 
-_algos = [RotateLights, StarryNight, WhiteRunningLight, OffAlgo]
+_algos = [RotateLights, StarryNight, WhiteRunningLight, RainbowRunningLight, OffAlgo]
 algo_by_name = {}
 for algo in _algos:
   algo_by_name[algo.__name__] = algo

@@ -50,6 +50,7 @@ algos = {
   "starry_night": "StarryNight",
   "rainbow": "RotateLights",
   "white": "WhiteRunningLight",
+  "rainbow_light": "RainbowRunningLight",
   "off": "OffAlgo"
 }
 

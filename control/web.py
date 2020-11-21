@@ -114,6 +114,6 @@ class WebControlThread(threading.Thread):
     super().__init__()
 
   def run(self):
-    app.run()
+    app.run(host='0.0.0.0')
 
 

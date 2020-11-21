@@ -10,6 +10,7 @@ from LedLine import LedLine as Line
 
 BLACK = Color(rgb=(0, 0, 0))
 
+import time
 
 class LightAlgo:
   def __init__(self, leds: Line):
@@ -121,7 +122,6 @@ class WhiteRunningLight(RunningLight):
   def nextLightColor(self) -> Color:
     return Color(rgb=(1, 1, 1))
 
-
 class RainbowRunningLight(RunningLight):
   @staticmethod
   def Create(leds: Line):
@@ -139,6 +139,20 @@ class RainbowRunningLight(RunningLight):
     return Color(hsl=(hue, 1.0, 0.5))
 
 
+class OffAlgo(LightAlgo):
+  @staticmethod
+  def Create(leds: Line):
+    return OffAlgo(leds)
+
+  def __init__(self, leds):
+    leds.SetLeds([BLACK for _ in range(len(leds))])
+    super().__init__(leds)
+
+  def update(self):
+    time.sleep(1)
+    pass
+
+
 class RotateAndLuminance(LightAlgo):
   class Type(Enum):
     SIN = 0
@@ -146,7 +160,7 @@ class RotateAndLuminance(LightAlgo):
 
   @staticmethod
   def Create(leds: Line):
-    return RotateAndLuminance(leds, type = RotateAndLuminance.Type.SIN)
+    return RotateAndLuminance(leds, type=RotateAndLuminance.Type.SIN)
 
   @staticmethod
   def CreateRandom(leds: Line):
@@ -210,7 +224,8 @@ class StarryNight(LightAlgo):
       Color(hsl=(hue, 1.0, luminance)),
       True)
 
-_algos = [RotateLights, RotateAndLuminance, StarryNight, WhiteRunningLight]
+
+_algos = [RotateLights, StarryNight, WhiteRunningLight, OffAlgo]
 algo_by_name = {}
 for algo in _algos:
   algo_by_name[algo.__name__] = algo

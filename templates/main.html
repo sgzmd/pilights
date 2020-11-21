@@ -39,21 +39,23 @@
                 <p>Последняя команда: {{last_command}}</p>
                 <div class="row">
                     <div class="col-sm">
-                        <button class="btn btn-success" onclick="javascript:window.location='/speed/faster'">Быстрее</button>
+                        <button class="btn btn-success" onclick="window.location='/speed/faster'">Быстрее</button>
                     </div>
                     <div class="col-sm">
                         <button class="btn btn-success"
-                            onclick="javascript:window.location='/speed/slower'">Медленнее</button>
+                                onclick="window.location='/speed/slower'">Медленнее
+                        </button>
                     </div>
                     <div class="col-sm">
                         <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-toggle="dropdown">
+                                data-toggle="dropdown">
                             Алгоритм
                         </button>
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="/algo/starry_night">Звездная ночь</a>
                             <a class="dropdown-item" href="/algo/rainbow">Радуга</a>
                             <a class="dropdown-item" href="/algo/white">Белый огонек</a>
+                            <a class="dropdown-item" href="/algo/off">Выключить</a>
                         </div>
 
                     </div>

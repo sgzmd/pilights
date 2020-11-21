@@ -1,7 +1,7 @@
 import logging
-import threading
-import queue
 import os
+import queue
+import threading
 
 from control.message import ControlMessage
 
@@ -48,8 +48,9 @@ delay: SpeedControl = None
 
 algos = {
   "starry_night": "StarryNight",
-  "rainbow": "RotateAndLuminance",
-  "white": "WhiteRunningLight"
+  "rainbow": "RotateLights",
+  "white": "WhiteRunningLight",
+  "off": "OffAlgo"
 }
 
 responses = {

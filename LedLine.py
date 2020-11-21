@@ -37,11 +37,9 @@ class LedLine(metaclass=ABCMeta):
   def DisplayLine(self):
     pass
 
-  @abstractmethod
   def PreUpdate(self) -> Callable:
     pass
 
-  @abstractmethod
   def PostUpdate(self) -> Callable:
     pass
 

@@ -57,7 +57,7 @@ def run(mode: str, num: int, algo: str, delay: int, apikey: str):
 
   q = queue.Queue(1)
   # control_thread = TelegramControlThread(q, apikey, delay)
-  control_thread = WebControlThread(q)
+  control_thread = WebControlThread(q, delay)
   control_thread.start()
   while True:
     if not q.empty():

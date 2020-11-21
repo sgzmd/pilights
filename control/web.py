@@ -15,6 +15,23 @@ logging.info("Flask will be looking for templates in %s", templates)
 app = Flask(__name__, template_folder=templates)
 
 control_queue: queue.Queue = None
+delay: int = None
+
+MAX_DELAY = 1000
+MIN_DELAY = 1
+DELAY_STEP = 100
+
+
+class SpeedControl():
+  def __init__(self, initial_speed: int):
+    self._initial_speed = initial_speed
+    self._delay = initial_speed
+
+  def faster(self):
+    if self._delay < MIN_DELAY:
+      return False
+    else:
+      self._delay -= DELAY_STEP
 
 algos = {
   "starry_night": "StarryNight",
@@ -30,7 +47,6 @@ def main(result_name = None):
 
 @app.route("/algo/<algo_name>")
 def algo(algo_name):
-  logging.info("Requesting algo %s", algo_name)
   if algo_name not in algos:
     logging.error("No such algorithm %s", algo_name)
     return redirect("/result/no_such_algo")
@@ -39,12 +55,23 @@ def algo(algo_name):
     control_queue.put_nowait(ControlMessage(
       ControlMessage.MessageType.CHANGE_ALGO,
       algos[algo_name]))
-  return redirect("/")
+  return redirect("/result/changed_algo")
+
+@app.route("/speed/<direction>")
+def speed(direction):
+  if direction == "faster":
+    pass
+  elif direction == "slower":
+    pass
+  else:
+    logging.info("Wrong direction: %s", direction)
+    return redirect("/result/bad_speed")
 
 class WebControlThread(threading.Thread):
-  def __init__(self, q: queue.Queue):
-    global control_queue
+  def __init__(self, q: queue.Queue, initial_delay: int):
+    global control_queue, delay
     control_queue = q
+    delay = initial_delay
     super().__init__()
 
   def run(self):

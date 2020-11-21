@@ -52,6 +52,15 @@ algos = {
   "white": "WhiteRunningLight"
 }
 
+responses = {
+  "no_such_algo": "Такого алгоритма не бывает",
+  "too_slow": "Слишком медленно - смотри, замерзнешь!",
+  "too_fast": "Слишком быстро - никто не догонит!",
+  "faster": "Поехали быстрее!",
+  "slower": "Тормозиии-и-и-и!!!",
+  "changed_algo": "Поменяли алгоритм"
+}
+
 @app.route("/")
 @app.route("/result/<result_name>")
 def main(result_name = None):
@@ -59,7 +68,7 @@ def main(result_name = None):
   if result_name == None:
     return render_template("main.html")
   else:
-    return render_template("main.html", last_command=result_name)
+    return render_template("main.html", last_command=responses[result_name])
 
 @app.route("/algo/<algo_name>")
 def algo(algo_name):
@@ -83,7 +92,7 @@ def speed(direction):
 
       return redirect("/result/faster")
     else:
-      return redirect("/result/too_faster")
+      return redirect("/result/too_fast")
   elif direction == "slower":
     if delay.slower():
       control_queue.put(ControlMessage(

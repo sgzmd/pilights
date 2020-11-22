@@ -13,8 +13,8 @@ else:
   GPIO = None
   RUNNING_ON_PI = False
 
-import Adafruit_WS2801
-import Adafruit_GPIO.SPI as SPI
+import board
+import adafruit_ws2801
 
 from LedLine import LedLine
 
@@ -26,35 +26,25 @@ SPI_PORT = 0
 SPI_DEVICE = 0
 
 class Ws2801LedLine(LedLine):
+  _pixels : adafruit_ws2801.WS2801 = None
+
   def __init__(self, size):
     if RUNNING_ON_PI:
-      self._pixels = Adafruit_WS2801.WS2801Pixels(
-          size, 
-          spi=SPI.SpiDev(SPI_PORT, SPI_DEVICE), gpio=GPIO)    
+      self._pixels = adafruit_ws2801.WS2801(board.D2, board.D0, size)
     super().__init__(size)
     self._leds = [Color(rgb=(0,0,0)) for _ in range(len(self._leds))]
+
     self.DisplayLine()
 
   def DisplayLine(self):
     for i in range(len(self._leds)):
       led = self._leds[i]
       if RUNNING_ON_PI:
-        self._pixels.set_pixel_rgb(i,
-          round(255 * led.get_red()),
-          round(255 * led.get_green()),
-          round(255 * led.get_blue()))
+        # self._pixels[i] = (round(255 * led.get_red()), round(255 * led.get_green()), round(255 * led.get_blue()))
+        self.SetOneLed(i, led)
 
-    if RUNNING_ON_PI:
-      self._pixels.show()
-  
   def SetOneLed(self, idx: int, color: Color, smooth=False):
-    logging.info("SetOneLed(%d to %s)", idx, color)
-
     self._leds[idx] = color
-    self._pixels.set_pixel_rgb(idx,  round(255 * color.get_red()),
-          round(255 * color.get_green()),
-          round(255 * color.get_blue()))
-  
-
-  def PostUpdate(self):
-    self._pixels.show()
+    self._pixels[idx] = (round(255 * color.get_red()),
+                         round(255 * color.get_green()),
+                         round(255 * color.get_blue()))

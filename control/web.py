@@ -63,14 +63,19 @@ responses = {
   "changed_algo": "Поменяли алгоритм"
 }
 
+global_brightness = 100
+
 @app.route("/")
 @app.route("/result/<result_name>")
 def main(result_name = None):
   logging.info("Result name: %s", result_name)
   if result_name == None:
-    return render_template("main.html")
+    return render_template("main.html",
+                           brightness=global_brightness)
   else:
-    return render_template("main.html", last_command=responses[result_name])
+    return render_template("main.html",
+                           last_command=responses[result_name],
+                           brightness=global_brightness)
 
 @app.route("/algo/<algo_name>")
 def algo(algo_name):
@@ -109,7 +114,9 @@ def speed(direction):
     return redirect("/result/bad_speed")
 
 @app.route("/brightness/<int:value>", methods=['POST'])
-def brightness(value: int):
+def brightness(value: int): 
+  global global_brightness
+  global_brightness = value
   brightness: float = value / 100.0
   logging.info("Changing brightness to %f after requested %d", brightness, value)
 

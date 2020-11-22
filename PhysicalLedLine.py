@@ -46,9 +46,19 @@ class Ws2801LedLine(LedLine):
 
   def SetOneLed(self, idx: int, color: Color, smooth=False):
     self._leds[idx] = color
-    self._pixels[idx] = (round(255 * color.get_red()),
-                         round(255 * color.get_green()),
-                         round(255 * color.get_blue()))
+    if not smooth:
+      self._pixels[idx] = (round(255 * color.get_red()),
+                           round(255 * color.get_green()),
+                           round(255 * color.get_blue()))
+    else:
+      for i in range(10):
+        adjust = i / 10.0
+        self._pixels[idx] = (round(255 * color.get_red() * adjust),
+                             round(255 * color.get_green() * adjust),
+                             round(255 * color.get_blue()) * adjust)
+        self._pixels.show()
+
+
 
   def PostUpdate(self):
     self._pixels.show()

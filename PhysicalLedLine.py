@@ -1,5 +1,7 @@
 import os.path
 import sys
+import time
+
 from colour import Color
 import logging
 from ConsoleLedLine import ConsoleLedLine
@@ -57,6 +59,7 @@ class Ws2801LedLine(LedLine):
                              int(round(255 * color.get_green() * adjust)),
                              int(round(255 * color.get_blue()) * adjust))
         self._pixels.show()
+        time.sleep(0.001)
 
   def PostUpdate(self):
     self._pixels.show()

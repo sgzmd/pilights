@@ -27,6 +27,13 @@ if DEBUG:
 SPI_PORT = 0
 SPI_DEVICE = 0
 
+
+def to_physical_color(color, adjust=1.0):
+  return (int(round(255 * color.get_red() * adjust)),
+          int(round(255 * color.get_green() * adjust)),
+          int(round(255 * color.get_blue()) * adjust))
+
+
 class Ws2801LedLine(LedLine):
   _pixels : adafruit_ws2801.WS2801 = None
 
@@ -49,17 +56,13 @@ class Ws2801LedLine(LedLine):
   def SetOneLed(self, idx: int, color: Color, smooth=False):
     self._leds[idx] = color
     if not smooth:
-      self._pixels[idx] = (round(255 * color.get_red()),
-                           round(255 * color.get_green()),
-                           round(255 * color.get_blue()))
+      self._pixels[idx] = to_physical_color(color)
     else:
       for i in range(10):
         adjust = (i+1) / 10.0
-        self._pixels[idx] = (int(round(255 * color.get_red() * adjust)),
-                             int(round(255 * color.get_green() * adjust)),
-                             int(round(255 * color.get_blue()) * adjust))
+        self._pixels[idx] = to_physical_color(adjust, color)
         self._pixels.show()
-        time.sleep(0.001)
+        time.sleep(0.01)
 
   def PostUpdate(self):
     self._pixels.show()

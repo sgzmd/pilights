@@ -69,13 +69,15 @@ def run(mode: str, num: int, algo: str, delay: int, apikey: str):
       elif event.type() == ControlMessage.MessageType.CHANGE_DELAY:
         logging.info("Changing delay to %d", event.data())
         delay = event.data()
+      elif event.type() == ControlMessage.MessageType.CHANGE_BRIGHTNESS:
+        logging.info("Changing brightness to %f", event.data())
+        line.SetBrightness(event.data())
 
     line.PreUpdate()
     algo.update()
     line.DisplayLine()
     line.PostUpdate()
     sleep(mode, delay)
-
 
 if __name__ == '__main__':
   run()

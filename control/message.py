@@ -6,6 +6,7 @@ class ControlMessage:
     STOP = 1
     CHANGE_DELAY = 2
     CHANGE_ALGO = 3
+    CHANGE_BRIGHTNESS = 4
 
   _data = None
   _messageType: MessageType = None

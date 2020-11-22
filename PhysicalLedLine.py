@@ -49,6 +49,10 @@ class Ws2801LedLine(LedLine):
     self._pixels[idx] = (round(255 * color.get_red()),
                          round(255 * color.get_green()),
                          round(255 * color.get_blue()))
-  
+
   def PostUpdate(self):
+    self._pixels.show()
+
+  def SetBrightness(self, brightness: float):
+    self._pixels.brightness(brightness)
     self._pixels.show()

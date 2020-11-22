@@ -108,6 +108,14 @@ def speed(direction):
     logging.info("Wrong direction: %s", direction)
     return redirect("/result/bad_speed")
 
+@app.route("/brightness/<int:value>", methods=['POST'])
+def brightness(value: int):
+  brightness: float = value / 100.0
+  logging.info("Changing brightness to %f after requested %d", brightness, value)
+
+  control_queue.put(ControlMessage(ControlMessage.MessageType.CHANGE_BRIGHTNESS, brightness))
+  return ('', 204)
+
 class WebControlThread(threading.Thread):
   def __init__(self, q: queue.Queue, initial_delay: int):
     global control_queue, delay

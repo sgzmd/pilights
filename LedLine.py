@@ -49,5 +49,9 @@ class LedLine(metaclass=ABCMeta):
     self.DisplayLine()
 
 
+  def SetBrightness(self, brightness: float):
+    pass
+
+
 BG_COLOR = (0, 0, 0)
 

@@ -1,5 +1,5 @@
 import time
-from algo.LightsAlgo import LightAlgo
+from algo.LightAlgo import LightAlgo
 from LedLine import LedLine
 
 class Looper:

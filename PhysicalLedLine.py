@@ -54,5 +54,5 @@ class Ws2801LedLine(LedLine):
     self._pixels.show()
 
   def SetBrightness(self, brightness: float):
-    self._pixels.brightness(brightness)
+    self._pixels.brightness = brightness
     self._pixels.show()

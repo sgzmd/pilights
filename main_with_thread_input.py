@@ -6,7 +6,7 @@ import time
 import click
 
 from LedLine import LedLine
-from algo import LightsAlgo
+from algo import algos
 from control.message import ControlMessage
 from control.web import WebControlThread
 
@@ -51,7 +51,7 @@ def run(mode: str, num: int, algo: str, delay: int, apikey: str):
     from ConsoleLedLine import ConsoleLedLine
     line = ConsoleLedLine(num)
 
-  algo = LightsAlgo.CreateAlgo(algo, line)
+  algo = algos.CreateAlgo(algo, line)
 
   q = queue.Queue(1)
   control_thread = WebControlThread(q, delay)
@@ -65,7 +65,7 @@ def run(mode: str, num: int, algo: str, delay: int, apikey: str):
       elif event.type() == ControlMessage.MessageType.CHANGE_ALGO:
         logging.info("Changing algo to %s", event.data())
         line.ClearLine()
-        algo = LightsAlgo.CreateAlgo(event.data(), line)
+        algo = algos.CreateAlgo(event.data(), line)
       elif event.type() == ControlMessage.MessageType.CHANGE_DELAY:
         logging.info("Changing delay to %d", event.data())
         delay = event.data()

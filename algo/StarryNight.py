@@ -4,6 +4,7 @@ from colour import Color
 
 from LedLine import LedLine as Line
 from algo.LightAlgo import LightAlgo
+from algo.common import BLACK
 
 
 class StarryNight(LightAlgo):
@@ -23,3 +24,7 @@ class StarryNight(LightAlgo):
       led_index,
       Color(hsl=(hue, 1.0, luminance)),
       True)
+
+    # Now let's turn off one LED
+    led_index = random.randint(0, len(self._line) - 1)
+    self._line.SetOneLed(led_index, BLACK)

@@ -52,13 +52,11 @@ class Ws2801LedLine(LedLine):
                            round(255 * color.get_blue()))
     else:
       for i in range(10):
-        adjust = i / 10.0
+        adjust = (i+1) / 10.0
         self._pixels[idx] = (round(255 * color.get_red() * adjust),
                              round(255 * color.get_green() * adjust),
                              round(255 * color.get_blue()) * adjust)
         self._pixels.show()
-
-
 
   def PostUpdate(self):
     self._pixels.show()

@@ -1,5 +1,4 @@
 from PhysicalLedLine import Ws2801LedLine
-from algo.algos import *
 from algo.RainbowRunningLight import RainbowRunningLight
 
 line = Ws2801LedLine(50)

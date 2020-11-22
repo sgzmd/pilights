@@ -1,7 +1,8 @@
 from abc import ABCMeta, abstractmethod
-
 from typing import List, Callable
+
 from colour import Color
+
 
 class LedLine(metaclass=ABCMeta):
   """

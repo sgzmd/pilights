@@ -1,6 +1,8 @@
 import time
-from algo.LightAlgo import LightAlgo
+
 from LedLine import LedLine
+from algo.LightAlgo import LightAlgo
+
 
 class Looper:
   def __init__(self, delay, algo: LightAlgo, line: LedLine):

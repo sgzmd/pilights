@@ -1,9 +1,9 @@
-import logging
 import sys
-from typing import List
 
 from colr import trans, controls
+
 from LedLine import LedLine
+
 
 class ConsoleLedLine(LedLine):
   """

@@ -1,7 +1,9 @@
 from abc import ABCMeta, abstractmethod
 from collections import deque
+
 from algo.LightAlgo import LightAlgo
 from algo.common import BLACK
+
 
 class RunningLight(LightAlgo, metaclass=ABCMeta):
   """

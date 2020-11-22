@@ -1,14 +1,10 @@
 import os.path
-import sys
 import time
 
 from colour import Color
-import logging
-from ConsoleLedLine import ConsoleLedLine
 
 if os.path.isfile("/sys/firmware/devicetree/base/model"):
   # Running on Raspberry Pi
-  import RPi.GPIO as GPIO
   RUNNING_ON_PI = True
 else:
   # Running on Mac maybe
@@ -22,7 +18,7 @@ from LedLine import LedLine
 
 DEBUG = True or not RUNNING_ON_PI
 if DEBUG:
-  from colr import trans, controls
+  pass
 
 SPI_PORT = 0
 SPI_DEVICE = 0

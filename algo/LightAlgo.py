@@ -1,5 +1,7 @@
 from abc import abstractmethod
+
 from LedLine import LedLine as Line
+
 
 class LightAlgo:
   def __init__(self, leds: Line):

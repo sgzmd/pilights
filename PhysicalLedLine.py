@@ -30,7 +30,7 @@ class Ws2801LedLine(LedLine):
 
   def __init__(self, size):
     if RUNNING_ON_PI:
-      self._pixels = adafruit_ws2801.WS2801(board.D2, board.D0, size)
+      self._pixels = adafruit_ws2801.WS2801(board.D11, board.D10, size, auto_write = False)
     super().__init__(size)
     self._leds = [Color(rgb=(0,0,0)) for _ in range(len(self._leds))]
 
@@ -42,9 +42,13 @@ class Ws2801LedLine(LedLine):
       if RUNNING_ON_PI:
         # self._pixels[i] = (round(255 * led.get_red()), round(255 * led.get_green()), round(255 * led.get_blue()))
         self.SetOneLed(i, led)
+    self._pixels.show()
 
   def SetOneLed(self, idx: int, color: Color, smooth=False):
     self._leds[idx] = color
     self._pixels[idx] = (round(255 * color.get_red()),
                          round(255 * color.get_green()),
                          round(255 * color.get_blue()))
+  
+  def PostUpdate(self):
+    self._pixels.show()

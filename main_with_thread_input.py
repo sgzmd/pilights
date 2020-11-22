@@ -26,7 +26,7 @@ def sleep(mode: str, delay: int):
 
 @click.command()
 @click.option("--mode", default="led", help="Mode to launch in (console/pygame/led)")
-@click.option("--num", default=56, help="Number of leds")
+@click.option("--num", default=96, help="Number of leds")
 @click.option("--algo", default="StarryNight", help="Name of the initial algorithm")
 @click.option("--delay", default=100, help="Delay, ms")
 @click.option("--apikey", default="", help="Telegram API key")

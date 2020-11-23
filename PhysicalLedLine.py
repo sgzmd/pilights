@@ -56,7 +56,7 @@ class Ws2801LedLine(LedLine):
     else:
       for i in range(10):
         adjust = (i+1) / 10.0
-        self._pixels[idx] = to_physical_color(adjust, color)
+        self._pixels[idx] = to_physical_color(color, adjust)
         self._pixels.show()
         time.sleep(0.01)
 

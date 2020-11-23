@@ -18,7 +18,7 @@ control_queue: queue.Queue = None
 
 MAX_DELAY = 1000
 MIN_DELAY = 1
-DELAY_STEP = 100
+DELAY_STEP = 10
 
 
 class SpeedControl():

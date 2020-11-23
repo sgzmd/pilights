@@ -23,6 +23,18 @@ def sleep(mode: str, delay: int):
   else:
     raise ValueError(f"Mode {mode} is not supported")
 
+def log_delay(speed: int) -> int:
+  """
+  Computes logarithmic delay. The higher the speed is, the more should be the increase of
+  the speed to make it more noticeable, the slower it is the less should be the increase
+  to allow for fine control.
+
+  with speed changing [1, 100] (the higher the faster) delay is inverse proportional to the
+  speed and can be calculated as:
+  :param speed:
+  :return:
+  """
+
 
 @click.command()
 @click.option("--mode", default="led", help="Mode to launch in (console/pygame/led)")

@@ -11,6 +11,8 @@ algo_by_name = {}
 for algo in _algos:
   algo_by_name[algo.__name__] = algo
 
+def GetAlgos():
+  return _algos
 
 def CreateAlgo(name: str, leds: Line):
   return algo_by_name[name].Create(leds)

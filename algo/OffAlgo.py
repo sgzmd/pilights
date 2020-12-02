@@ -3,6 +3,7 @@ import time
 from LedLine import LedLine as Line
 from algo.LightAlgo import LightAlgo
 
+from algo.common import BLACK
 
 class OffAlgo(LightAlgo):
   @staticmethod

@@ -1,9 +1,10 @@
 from collections import deque
+
 from colour import Color
 
 from LedLine import LedLine as Line
 from algo.LightAlgo import LightAlgo
-from algo.common import BLACK
+
 
 class WinterNight(LightAlgo):
   _step: int = 0
